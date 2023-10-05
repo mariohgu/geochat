@@ -7,3 +7,4 @@ services:
       - .:/usr/src/app  # Monta el directorio actual en /usr/src/app dentro del contenedor
     ports:
       - "5000:5000"
+    command: python app.py
