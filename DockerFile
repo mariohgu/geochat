@@ -15,4 +15,4 @@ RUN python -m spacy download es_core_news_md
 RUN python -m nltk.downloader punkt
 
 # Comando por defecto (por ejemplo, iniciar un shell)
-CMD ["python", "app.py"]
+CMD ["python3", "app.py"]
