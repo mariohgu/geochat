@@ -3,26 +3,18 @@
 
 #Instalando bibliotecas necesarias
 import pandas as pd
-#import numpy as np
 import re
 import os
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import spacy
-#!python -m spacy download es_core_news_md
 nlp = spacy.load('es_core_news_md')
-#!pip install jellyfish
 import jellyfish
 import requests
-#!pip install python-docx
-#import csv
-#from docx import Document
 import nltk
-#nltk.download('punkt')
 global diccionario_irregulares, documento, lista_frases, lista_frases_normalizadas
 import warnings, os
 warnings.filterwarnings('ignore')
-#!pip install transformers
 from transformers import BertForSequenceClassification
 from transformers import BertTokenizer
 import torch
@@ -88,7 +80,6 @@ def normalizar(texto):
         tokens.append(raiz(tratamiento_texto(lemma)))
       else:
         tokens.append(tratamiento_texto(lemma))
-
   tokens = list(dict.fromkeys(tokens))
   tokens = list(filter(None, tokens))
   tokens = revisar_tokens(texto, tokens)
@@ -117,7 +108,6 @@ def normalizar_modelo(texto):
   return tratamiento_texto(tokens)
 
 # # 3. Cargar bases de verbos
-
 #Importando verbos en español
 
 trans = str.maketrans('áéíóú','aeiou')
@@ -174,7 +164,6 @@ for columna in df.columns:
 
 
 # # 4. Cargar bases de documentos
-
 #Importando bases de dialogo fluído
 txt_folder_path = os.path.join(ruta, 'txt')
 lista_documentos=[x for x in os.listdir(txt_folder_path) if x.endswith(".txt")]
@@ -277,7 +266,6 @@ def clasificacion_modelo(pregunta):
   similarity_scores = cosine_similarity(dialogos_num, pregunta_num)
   indice_pregunta_proxima = similarity_scores.argmax()
   if clase_encontrada not in ['Otros']:
-    #print('Respuesta encontrada por el modelo Transformers - tipo:',clase_encontrada)
     respuesta = df['respuesta'][indice_pregunta_proxima]
   else:
     respuesta = ''
@@ -291,7 +279,6 @@ def respuesta_documento(pregunta):
 
   diccionario = {valor: posicion for posicion, valor in enumerate(lista_frases_normalizadas)}
   lista = sorted(list(diccionario.keys()), key=contar_coincidencias, reverse=True)[:6]
-  #if 'curso' not in pregunta: lista = [frase for frase in lista if 'curso' not in frase]
   lista.append(' '.join(pregunta))
   TfidfVec = TfidfVectorizer(tokenizer=normalizar)
   tfidf = TfidfVec.fit_transform(lista)
@@ -301,7 +288,6 @@ def respuesta_documento(pregunta):
   flat.sort()
   req_tfidf = round(flat[-2],2)
   if req_tfidf>=0.20:
-    #print('Respuesta encontrada por el método TfidfVectorizer - Probabilidad:', req_tfidf)
     respuesta = lista_frases[diccionario[lista[idx]]]
   else:
     respuesta = ''

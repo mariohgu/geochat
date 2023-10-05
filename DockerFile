@@ -1,0 +1,18 @@
+# Usa una imagen base de Python 3.10
+FROM python:3.10
+
+# Establece el directorio de trabajo dentro del contenedor
+WORKDIR /usr/src/app
+
+# Copia un archivo de requerimientos (para instalar las dependencias de Python)
+COPY librerias.txt ./
+
+# Instala las dependencias de Python
+RUN pip install --no-cache-dir -r librerias.txt
+
+# Descarga los modelos y paquetes necesarios
+RUN python -m spacy download es_core_news_md
+RUN python -m nltk.downloader punkt
+
+# Comando por defecto (por ejemplo, iniciar un shell)
+CMD [ "/bin/bash" ]
