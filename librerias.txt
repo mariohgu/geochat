@@ -1,0 +1,18 @@
+Necesita elaborar un ambiente en Python con las siguientes librerias...
+
+flask
+pandas
+spacy
+scikit-learn
+jellyfish
+transformers
+torch
+regex
+numpy
+nltk
+
+Y que descargue los siguientes archivos.
+
+
+RUN python -m spacy download es_core_news_md
+RUN python -m nltk.downloader punkt

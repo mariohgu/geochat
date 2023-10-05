@@ -1,0 +1,42 @@
+acceder al login visible en la sección Gobiernos Regionales y Locales
+Para acceder al login, el funcionario del gobierno regional o local requiere de credenciales de acceso que brinda la Secretaría de Gobierno y Transformación Digital. El login permite el acceso al funcionario a su módulo de administración. El módulo de administración es la plataforma que permite la incorporación, gestión y mantenimiento de información geográfica en el subsistema de su respectivo territorio. Para la creación del subsistema (derivado de GeoPerú) de un gobierno regional o local, dicho gobierno debe oficializar una expresión de interés dirigida a la Secretaría de Gobierno y Transformación Digital de la Presidencia del Consejo de Ministros para recibir asistencia técnica.
+accedo a la información que han agregado los funcionarios de los gobiernos subnacionales
+Se puede reconocer que un gobierno subnacional ha incorporado capas georreferenciadas (y por consiguiente, información de su territorio) si se puede visualizar el logotipo de su gobierno y su nombre en la cabecera del mapa interactivo. Haciendo clic en dicho logotipo, seremos redirigidos al subsistema con información adicional del gobierno elegido.
+con que frecuencia se actualiza la información de la plataforma
+La frecuencia de actualización depende de la fuente o entidad productora de la información. Esta puede ser semanal, mensual, trimestral, anual, censal, incluso en algunos casos puede ser información realizada por única vez.
+Es oficial la información que se presenta en la plataforma
+Toda la información publicada en GeoPerú proviene de entidades oficiales. En todas las capas publicadas se hace referencia a la fuente productora de la información. También puede visualizarla en la sección Categorías, en la página web.
+puedo descargar la información en formato shapefile
+La plataforma está diseñada para usuarios no especializados en sistemas de información geográfica (GIS), por ejemplo, un estudiante, una autoridad regional o local, un ciudadano, que no necesariamente están capacitados para manejar herramientas GIS, por tanto, no puede descargarse en el formato especificado. Es posible descargar información georreferenciada (shapefile) a través de la página web de la IDEP en el enlace www.gob.pe/idep
+puedo usar la información para fines públicos y privados
+Toda la información que ponemos a disposición del usuario proviene de entidades oficiales y puede ser usada para los fines que vea conveniente el usuario, teniendo en cuenta que las responsables de la información son las propias entidades productoras de datos.
+como encuentro una ubicación en el mapa
+En la sección superior derecha se ubica el buscador para delimitar un departamento, provincia o distrito a nivel nacional. Una vez seleccionada, la ubicación se delimitará con una línea morada.
+como se activan las capas georreferenciadas
+Para activarlas primero desplegamos la barra lateral izquierda haciéndole clic. En esta, veremos una lista con los grupos de capas (categorías) como Salud, Educación, entre otros. Seleccionamos el grupo de nuestro interés y al desplegar su contenido, veremos las capas que contiene, las que podemos activar haciendo clic en el cuadro que acompaña su nombre.
+cuantas capas hay actualmente disponibles
+A la fecha, enero del 2022, se encuentran disponibles en la plataforma 763 capas georreferenciadas organizadas en 27 categorías de información.
+quien brinda esta información
+La información proviene, en su mayoría, de entidades oficiales del Estado, además de determinadas fuentes privadas. Para reconocer la fuente de la capa, el usuario puede hacer clic en el botón de información (i) al lado izquierdo del cuadro de activación de las capas.
+quien da esta información
+La información proviene, en su mayoría, de entidades oficiales del Estado, además de determinadas fuentes privadas. Para reconocer la fuente de la capa, el usuario puede hacer clic en el botón de información (i) al lado izquierdo del cuadro de activación de las capas.
+quien proporciona esta información
+La información proviene, en su mayoría, de entidades oficiales del Estado, además de determinadas fuentes privadas. Para reconocer la fuente de la capa, el usuario puede hacer clic en el botón de información (i) al lado izquierdo del cuadro de activación de las capas.
+cuales son las capas revisadas con mayor frecuencia
+Las capas revisadas con mayor frecuencia son las de los grupos de capas (o categorías): Cartografía, Salud, Pobreza, Infraestructura y Actividades/Proyectos. Se pueden revisar sus sumillas en la sección de categorías, además que cada grupo cuenta con un instructivo, accesibles desde sus respectivos enlaces. Cartografía, Salud, Pobreza, Infraestructura y Actividades/Proyectos. 
+cuales son las herramientas disponibles en la plataforma
+Ubicado al lado derecho, el panel de herramientas cuenta con las siguientes funciones: Reportes Digitales: permite acceder a reportes predefinidos con indicadores seleccionados para un panorama general de la zona. Mapa Base: permite cambiar el aspecto y la información visual del mapa de fondo. Sube tu archivo: carga servicios WMS o WFS (servicio para especialistas en sistemas geográficos) y visualiza servicios de fuentes externas. Dibuja en el mapa: realiza diversas figuras en el mapa y delimita zonas específicas. Descargar datos: descarga datos geográficos específicos de capas seleccionadas. Mis mapas: guarda los mapas que hayas configurado en tu sesión actual para una futura revisión. Imprimir: configura e imprime los mapas que hayas personalizado durante tu sesión. Compartir: comparte tu mapa copiando el enlace que se genera o envíalo a través de las principales redes sociales.
+que otro tipo funciones están disponibles
+Puedes utilizar la opción de escala personalizada ubicada en la sección inferior izquierda. El usuario puede ingresar una escala personalizada en su recuadro correspondiente para ajustar el nivel de acercamiento del mapa.
+que otro tipo funciones hay disponibles
+Puedes utilizar la opción de escala personalizada ubicada en la sección inferior izquierda. El usuario puede ingresar una escala personalizada en su recuadro correspondiente para ajustar el nivel de acercamiento del mapa.
+que otras funciones hay disponibles
+Puedes utilizar la opción de escala personalizada ubicada en la sección inferior izquierda. El usuario puede ingresar una escala personalizada en su recuadro correspondiente para ajustar el nivel de acercamiento del mapa.
+bajo que estándar se expresa la información geográfica
+La información mostrada en la plataforma se expresa bajo el sistema geodésico DATUM WGS84, sistema de representación geográfica utilizado en la plataforma y sobre el cual se puede conocer más información desde su botón en el menú inferior del visor.
+cuales son los reportes disponibles en la plataforma
+La plataforma brinda información a través de 2 tipos de reportes: Reportes Digitales y estadísticos. Los digitales se caracterizan por tener información predefinida que permiten comprender un panorama general y conciso, mientras que los reportes estadísticos ahondan con información numérica sobre un tema en específico, visible en tablas informativas.
+como accedo a los reportes digitales
+Los Reportes Digitales son accesibles desde el botón amarillo al inicio del panel izquierdo. Los repotes digitales disponibles actualmente son los siguientes: Principales Indicadores: Dispone de información territorial, principales brechas e indicadores sociales, entre otros. Puede descargarlo o imprimirlo con las opciones ubicadas al lado superior derecho del reporte. Inversión Pública: Muestra los avances en inversión realizados desde diversas funciones, sectores o categorías presupuestales por parte de los diferentes niveles de gobierno para el territorio buscado. Violencia de género: Disponible solo para distritos. Permite conocer características generales de casos reportados sobre violencia de género. 
+como accedo a los reportes estadisticos
+Para ver los reportes estadísticos se debe hacer clic en un punto de interés en el mapa, accediendo así a la ventana Metadata. Desde esta ventana se puede acceder a los reportes estadísticos disponibles presionando el botón Ver reporte. Imaginemos nuestro cursor como un alfiler. Al fijar el alfiler en un punto del mapa, este entrará en contacto con una o más capas (que hayamos activado previamente). Al hacer clic en el punto elegido, y generar la ventana Metadata, veremos enlistadas todas las capas y sus reportes estadísticos disponibles.
