@@ -1,10 +1,10 @@
-
 # # 1. Configurar ambiente
 
 #Instalando bibliotecas necesarias
 import pandas as pd
 import re
 import os
+from dotenv import load_dotenv
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import spacy
@@ -18,8 +18,22 @@ warnings.filterwarnings('ignore')
 from transformers import BertForSequenceClassification
 from transformers import BertTokenizer
 import torch
+from groq import Groq
+import logging
 
 ruta = os.path.dirname(__file__)
+
+load_dotenv()
+GROQ_API_KEY = os.getenv('GROQ_API_KEY')
+UMBRALES = os.getenv('UMBRALES')
+# Configuraciones generales
+
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 
 # #2. Tratamiento de datos
 #Función para encontrar la raiz de las palabras
@@ -27,7 +41,7 @@ def raiz(palabra):
   radio=0
   palabra_encontrada=palabra
   for word in lista_verbos:
-    confianza = jellyfish.jaro_winkler(palabra, word)
+    confianza = jellyfish.jaro_similarity(palabra, word)
     if (confianza>=0.93 and confianza>=radio):
       radio=confianza
       palabra_encontrada=word
@@ -63,27 +77,31 @@ def revisar_tokens(texto, tokens):
 
 #Función para devolver los tokens normalizados del texto
 def normalizar(texto):
-  tokens=[]
-  tokens=revisar_tokens(texto, tokens)
-  if 'geoperu' in tokens:
-    texto = ' '.join(texto.split()[:15])
-  else:
-    texto = ' '.join(texto.split()[:25])
+  try:
+    tokens=[]
+    tokens=revisar_tokens(texto, tokens)
+    if 'GeoPerú' in tokens:
+      texto = ' '.join(texto.split()[:15])
+    else:
+      texto = ' '.join(texto.split()[:25])
 
-  doc = nlp(texto)
-  for t in doc:
-    lemma=diccionario_irregulares.get(t.text, t.lemma_.split()[0])
-    lemma=re.sub(r'[^\w\s+\-*/]', '', lemma)
-    if t.pos_ in ('VERB','PROPN','PRON','NOUN','AUX','SCONJ','ADJ','ADV','NUM') or lemma in lista_verbos:
-      if t.pos_=='VERB':
-        lemma = reemplazar_terminacion(lemma)
-        tokens.append(raiz(tratamiento_texto(lemma)))
-      else:
-        tokens.append(tratamiento_texto(lemma))
-  tokens = list(dict.fromkeys(tokens))
-  tokens = list(filter(None, tokens))
-  tokens = revisar_tokens(texto, tokens)
-  return tokens
+    doc = nlp(texto)
+    for t in doc:
+      lemma=diccionario_irregulares.get(t.text, t.lemma_.split()[0])
+      lemma=re.sub(r'[^\w\s+\-*/]', '', lemma)
+      if t.pos_ in ('VERB','PROPN','PRON','NOUN','AUX','SCONJ','ADJ','ADV','NUM') or lemma in lista_verbos:
+        if t.pos_=='VERB':
+          lemma = reemplazar_terminacion(lemma)
+          tokens.append(raiz(tratamiento_texto(lemma)))
+        else:
+          tokens.append(tratamiento_texto(lemma))
+    tokens = list(dict.fromkeys(tokens))
+    tokens = list(filter(None, tokens))
+    tokens = revisar_tokens(texto, tokens)
+    return tokens
+  except Exception as e:
+    logger.error(f"Error al normalizar texto: {str(e)}")
+    raise ChatbotError(f"Error en normalización: {str(e)}")
 
 #Función normalizar que se utilizó para entrenar el modelo
 def normalizar_modelo(texto):
@@ -219,17 +237,15 @@ def dialogo(user_response):
   for idx,row in df.iterrows():
     df.at[idx,'interseccion'] = len(set(user_response.split()) & set(row['dialogo'].split()))/len(user_response.split())
     df.at[idx,'similarity'] = cosine_similarity(dialogos_numero[idx], respuesta_numero)[0][0]
-    df.at[idx,'jaro_winkler'] = jellyfish.jaro_winkler(user_response,row['dialogo'])
+    df.at[idx,'jaro_winkler'] = jellyfish.jaro_similarity(user_response,row['dialogo'])
     df.at[idx,'probabilidad'] = max(df.at[idx,'interseccion'],df.at[idx,'similarity'],df.at[idx,'jaro_winkler'])
   df.sort_values(by=['probabilidad','jaro_winkler'], inplace=True, ascending=False)
   probabilidad = df['probabilidad'].head(1).values[0]
   tipo = df['tipo'].head(1).values[0]
-  if probabilidad >= 0.93:
-    print('Respuesta encontrada por el método de comparación de textos - Probabilidad: ', probabilidad)
-    respuesta = df['respuesta'].head(1).values[0]
-  else:
-    respuesta = ''
-  return respuesta
+  if probabilidad >= UMBRALES['similitud_dialogo']:
+    logger.info(f'Respuesta encontrada por diálogo - Probabilidad: {probabilidad}')
+    return df['respuesta'].head(1).values[0]
+  return ''
 
 
 #Función para dialogar utilizando el modelo Transformers
@@ -270,6 +286,26 @@ def clasificacion_modelo(pregunta):
   else:
     respuesta = ''
   return respuesta
+  
+class GroqClient:
+    def __init__(self, api_key):
+        self.client = Groq(api_key=api_key)
+    
+    def obtener_respuesta(self, pregunta):
+        try:
+            chat_completion = self.client.chat.completions.create(
+                messages=[{"role": "user", "content": pregunta}],
+                model="llama3-8b-8192",
+                stream=False
+            )
+            return chat_completion.choices[0].message.content
+        except Exception as e:
+            logger.error(f"Error al llamar a Groq API: {str(e)}")
+            return None
+
+def respuesta_conAPi(pregunta):
+    client = GroqClient(GROQ_API_KEY)
+    return client.obtener_respuesta(pregunta)
 
 #Función para devolver la respuesta de los documentos
 def respuesta_documento(pregunta):
@@ -293,20 +329,47 @@ def respuesta_documento(pregunta):
     respuesta = ''
   return respuesta
 
-#Función para devolver una respuesta final buscada en todos los métodos disponibles
+class RespuestaHandler:
+    def __init__(self, siguiente_handler=None):
+        self.siguiente_handler = siguiente_handler
+    
+    def manejar(self, pregunta):
+        respuesta = self.procesar(pregunta)
+        if respuesta:
+            return respuesta
+        elif self.siguiente_handler:
+            return self.siguiente_handler.manejar(pregunta)
+        return 'Lo siento, no tengo respuesta para tu pregunta'
+    
+    def procesar(self, pregunta):
+        raise NotImplementedError
+
+class DialogoHandler(RespuestaHandler):
+    def procesar(self, pregunta):
+        return dialogo(pregunta)
+
+class DocumentoHandler(RespuestaHandler):
+    def procesar(self, pregunta):
+        return respuesta_documento(pregunta)
+
+class ModeloHandler(RespuestaHandler):
+    def procesar(self, pregunta):
+        return clasificacion_modelo(pregunta)
+
+class APIHandler(RespuestaHandler):
+    def procesar(self, pregunta):
+        return respuesta_conAPi(pregunta)
+
+def crear_cadena_respuesta():
+    api_handler = APIHandler()
+    modelo_handler = ModeloHandler(api_handler)
+    documento_handler = DocumentoHandler(modelo_handler)
+    dialogo_handler = DialogoHandler(documento_handler)
+    return dialogo_handler
+
 def respuesta_chatbot(pregunta):
-  respuesta = dialogo(pregunta)
-  if respuesta != '':
-    return respuesta
-  else:
-    respuesta = respuesta_documento(pregunta)
-    if respuesta != '':
-      return respuesta
-    else:
-      respuesta = clasificacion_modelo(pregunta)
-      if respuesta != '':
-        return respuesta
-      else:
-        return 'Lo siento, tu pregunta no se encuentra en mi base de datos. Lo considerare para mejorar en mi proximo entrenamiento'
+    cadena = crear_cadena_respuesta()
+    return cadena.manejar(pregunta)
 
-
+class ChatbotError(Exception):
+    pass
